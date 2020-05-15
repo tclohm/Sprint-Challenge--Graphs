@@ -66,7 +66,7 @@ def crawl():
         current_room = room_graph[room_id]
         print(current_room)
         
-        # adjacent rooms
+        # neighboring rooms
         neighboring_rooms = current_room[1]
         print(neighboring_rooms)
 
