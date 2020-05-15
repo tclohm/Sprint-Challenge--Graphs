@@ -57,7 +57,7 @@ def crawl():
     stack.push(player.current_room.id)
 
     while len(visited) < len(room_graph):
-        # peek at room id, stack is holding path so we can't pop it. Thanks ray wenderlich
+        # peek at room id, stack is holding path so we can't pop it. Thanks https://stackoverflow.com/questions/46801747/peek-stack-in-python-3
         room_id = stack.peek()
 
         visited.add(room_id)
@@ -81,17 +81,16 @@ def crawl():
                 unknown.append(neighbor_id)
 
         # move to the next room
-        print("unknown", len(unknown))
+        print("length of unknown:", len(unknown))
         if len(unknown) > 0:
             # grab next room
             next_room = unknown[0]
-            print("next room in unknown", next_room)
+            print("next room in unknown being pushed to stack", next_room)
             stack.push(next_room)
-            print("stack", stack.peek())
         else:
             # remove current
-            print("popping off of stack", stack)
-            stack.pop()
+            go_back = stack.pop()
+            print("we've reached a deadend, popping off of stack:", go_back)
             next_room = stack.peek()
 
         # check out the rooms, if the neighbor_id is the next room append it to moves
