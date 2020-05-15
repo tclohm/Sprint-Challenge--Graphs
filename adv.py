@@ -30,22 +30,6 @@ player = Player(world.starting_room)
 
 # Fill this out with directions to walk
 # traversal_path = ['n', 'n']
-traversal_path = []
-room_path = []
-
-accepted_direction = {'n', 's', 'w', 'e'}
-direction = ["?"]
-last_direction = '?'
-direction_graph = {}
-
-for room in world.rooms:
-    dic = {}
-    for e in world.rooms[room].get_exits():
-        dic[e] = "?"
-    direction_graph[room] = dic
-
-recently_visited = set()
-explored_rooms = set()
 
 def reverse(direction):
     if direction is 'n':
@@ -58,57 +42,68 @@ def reverse(direction):
         return 'w'
 
 # DEPTH First Traversal
-stack = Stack()
-stack.push(player.current_room.id)
+def crawl():
+    """
+    print each node in depth order starting from our initial room
+    """
 
-while len(explored_rooms) < len(room_graph):
-    print(len(explored_rooms))
+    # stack will hold the path
+    stack = Stack()
+    # return our path
+    moves = []
+    # visited rooms, and determine if we hit a dead end
+    visited = set()
 
-    direction_head = direction.pop()
+    stack.push(player.current_room.id)
 
-    prev_room = player.current_room.id
+    while len(visited) < len(room_graph):
+        # peek at room id, stack is holding path so we can't pop it. Thanks ray wenderlich
+        room_id = stack.peek()
 
-    if direction_head in accepted_direction:
-        player.travel(direction_head)
-        traversal_path.append(direction_head)
+        visited.add(room_id)
 
-        direction_graph[prev_room][direction_head] = player.current_room.id
-        opposite = reverse(direction_head)
-        direction_graph[player.current_room.id][opposite] = prev_room
+        # grab the rooms details
+        current_room = room_graph[room_id]
+        print(current_room)
+        
+        # adjacent rooms
+        neighboring_rooms = current_room[1]
+        print(neighboring_rooms)
 
-    for exit in direction_graph[player.current_room.id]:
+        # track if rooms have not been visited
+        unknown = []
 
-        if direction_graph[player.current_room.id][exit] not in recently_visited:
-            if direction_graph[player.current_room.id][exit] == "?":
-                direction = [exit]
+        # store the undiscovered rooms, got a little hacky using the items()
+        for direction, neighbor_id in neighboring_rooms.items():
+            print("has neighbor", neighbor_id, "been visited?")
+            if neighbor_id not in visited:
+                print("Not visited appending to unknown:", neighbor_id)
+                unknown.append(neighbor_id)
 
-    explored_rooms.add(player.current_room.id)
+        # move to the next room
+        print("unknown", len(unknown))
+        if len(unknown) > 0:
+            # grab next room
+            next_room = unknown[0]
+            print("next room in unknown", next_room)
+            stack.push(next_room)
+            print("stack", stack.peek())
+        else:
+            # remove current
+            print("popping off of stack", stack)
+            stack.pop()
+            next_room = stack.peek()
 
-    path_back = traversal_path.copy()
-    recently_visited = set()
+        # check out the rooms, if the neighbor_id is the next room append it to moves
+        for direction, neighbor_id in neighboring_rooms.items():
+            print(neighbor_id, next_room)
+            if neighbor_id == next_room:
+                print("appending to moves", direction)
+                moves.append(direction)
 
-    while len(path_back) > 0:
-        forward_direction = path_back.pop()
-        back_direction = reverse(forward_direction)
+    return moves
 
-        avoid = False
-
-        recently_visited.add(player.current_room.id)
-
-        for move in direction_graph[player.current_room.id]:
-
-            if direction_graph[player.current_room.id][move] == "?":
-                avoid = True
-                direction = [move]
-
-        if avoid == False:
-
-            if back_direction in accepted_direction:
-
-                player.travel(back_direction)
-                traversal_path.append(back_direction)
-
-
+traversal_path = crawl()
 
 # TRAVERSAL TEST - DO NOT MODIFY
 visited_rooms = set()
