@@ -2,6 +2,21 @@ from room import Room
 import random
 import math
 
+
+"""
+    World {
+        starting_room: id?
+        rooms: {}
+        room: []
+        grid_size: int
+    }
+    matrix = [[["water", "water", "land"]]]
+    matrix[0][0][0] -> "water"
+    matrix[0][0][2] -> "land"
+
+    load_graph -> imports room_graph into an array with dictionaries to show directions
+    print_rooms -> prints a GUI representation of the graph
+"""
 class World:
     def __init__(self):
         self.starting_room = None

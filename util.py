@@ -25,3 +25,5 @@ class Stack:
 			return None
 	def size(self):
 		return len(self.stack)
+	def peek(self):
+		return self.stack[-1]
