@@ -95,9 +95,9 @@ def crawl():
 
         # check out the rooms, if the neighbor_id is the next room append it to moves
         for direction, neighbor_id in neighboring_rooms.items():
-            print(neighbor_id, next_room)
+            print("checking to see if neighbor_id", neighbor_id, "is equal too next_room", next_room)
             if neighbor_id == next_room:
-                print("appending to moves", direction)
+                print("neigbor and next_room match! appending to moves", direction)
                 moves.append(direction)
 
     return moves
